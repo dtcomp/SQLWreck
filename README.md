@@ -1,6 +1,20 @@
-Customer merge/report ( to find top-spending customers )
+** Caution
+	This is NOT recommended in general, it is simply
+	a "hard" task which only needs to run once, in our case.
+	And, there are other ways it could be done at a slightly
+	higher level of abstraction (PHP, etc.). Instead we chose
+	to skip the webserver, PHP etc. and code it all in SQL, partly
+	just for the experience...
+	
+** Purpose
 
-Strategy
+1) Merge legacy customer info database (VikBooking) with existing Square customers
+   into a form that can be uploaded back to Square customer database.
+   
+2) Generate reports with merged data (like - top-spending customers, etc.)
+
+
+** Strategy
 
 1) Prepare Square customer data (in Square Customer UI)
 	* Merge identifiable duplicate customers
@@ -20,12 +34,12 @@ Strategy
 
 	* This is complicated by VikBooking not creating/storing
 	  customer data in it's customer table, so we
-	  must parse through 'custdata' text fields, per order
+	  must parse through 'custdata' text fields, *per order*,
 	  some of which are "free-form" entries and some are
-          formatted by system.
+          formatted by the VB system.
 	  Note: VikBooking *now* creates entries in `customers`
-                table for new orders.
-                (since Square integration - about May, 2017).
+                table for new orders (due to corrections by dTC,
+                since Square integration - about May, 2017).
 	
 3) Merge/Create/Update Customer Data with Square DB
  
@@ -40,21 +54,19 @@ Strategy
 	    customer.
 	* NOTE: This step only has to be performed once,
 	  to bring in historical data from VikBooking.
-	  Since using Square, (instead of old PayPal setup)
-	  customer data is automatically logged in Square
-	  Customers data.
-
+	  Since we added Square integration to website,
+	  customer data is automatically persisted in Square.
 
 4) Run Reports
 	* SQL procedures...
 	* With updated records containing sales totals
 	* With desired parameters
-	  (Top 100, most frequent, bracketed sales, etc.)
+	  (Top N, most frequent, bracketed sales, etc.)
         * Export report data to CSV
         * Convert CSV to .xlsx ( Excel Format )
 
 
-4) Update live Square data (Optional)
+4) Update live Square data
 	* Now that we possibly have many additional
 	  customers and sales identified from old VikBooking
 	  data and that data is merged with Square customer
