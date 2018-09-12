@@ -1,0 +1,10 @@
+set @start=now();
+select @start as 'start';
+source vb_extract_orders.sql;
+source vb_create_customers.sql;
+source sq_match_customers.sql;
+source top_customers.sql;
+source new_customers.sql;
+set @finish=now();
+select @finish as 'finish';
+select timediff(@finish,@start) as elapsed;
